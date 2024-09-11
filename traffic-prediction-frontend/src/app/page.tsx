@@ -4,16 +4,13 @@ import Link from "next/link";
 export default function HomePage() {
   const words = [
     {
-      text: "Get Ready",
-    },
-    {
-      text: "to Predict",
+      text: " Predict",
     },
     {
       text: "Traffic",
     },
     {
-      text: "with",
+      text: "Using",
     },
     {
       text: "Machine Learning",
@@ -28,8 +25,8 @@ export default function HomePage() {
       <TypewriterEffectSmooth words={words} />
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
         <Link href="/form">
-          <button className="w-40 h-12 rounded-md bg-white text-black border border-black text-md font-bold">
-            Predict
+          <button className="w-40 h-12 rounded-md bg-white text-black border border-black text-md font-semibold hover:text-blue-500">
+            Start Predicting
           </button>
         </Link>
       </div>
