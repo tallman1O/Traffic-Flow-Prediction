@@ -28,7 +28,7 @@ export default function HomePage() {
       <TypewriterEffectSmooth words={words} />
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
         <Link href="/form">
-          <button className="w-40 h-10 rounded-xl bg-white text-black border border-black text-md font-bold">
+          <button className="w-40 h-12 rounded-md bg-white text-black border border-black text-md font-bold">
             Predict
           </button>
         </Link>
