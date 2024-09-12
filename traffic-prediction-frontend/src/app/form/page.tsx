@@ -1,5 +1,5 @@
-"use client"
-import React, { useState, useEffect } from "react";
+"use client";
+import React, { useState } from "react";
 import {
   Card,
   CardDescription,
@@ -16,10 +16,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { SelectLabel } from "@radix-ui/react-select";
+import { Loader2 } from "lucide-react"; // Import Loader
 
 type FormData = {
-  Date: string;
   "Weather Conditions": string;
   "Area Name": string;
   "Road/Intersection Name": string;
@@ -31,60 +30,72 @@ type Prediction = {
   additional_factors: { [key: string]: string };
 };
 
-type Options = {
-  dates: string[];
-  weatherConditions: string[];
-  areaNames: string[];
-  roadNames: string[];
+const options = {
+  areaNames: [
+    "Indiranagar",
+    "Whitefield",
+    "Koramangala",
+    "M.G. Road",
+    "Jayanagar",
+    "Hebbal",
+    "Yeshwanthpur",
+    "Electronic City",
+  ],
+  roadNames: [
+    "100 Feet Road",
+    "CMH Road",
+    "Marathahalli Bridge",
+    "Sony World Junction",
+    "Sarjapur Road",
+    "Trinity Circle",
+    "Anil Kumble Circle",
+    "Jayanagar 4th Block",
+    "South End Circle",
+    "Hebbal Flyover",
+    "Ballari Road",
+    "Yeshwanthpur Circle",
+    "Tumkur Road",
+    "ITPL Main Road",
+    "Silk Board Junction",
+    "Hosur Road",
+  ],
+  weatherConditions: ["Clear", "Overcast", "Fog", "Rain", "Windy"],
 };
 
 const Page: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    Date: "",
     "Weather Conditions": "",
     "Area Name": "",
     "Road/Intersection Name": "",
     "Roadwork and Construction Activity": "No",
   });
+
   const [prediction, setPrediction] = useState<Prediction | null>(null);
-  const [options, setOptions] = useState<Options>({
-    dates: [],
-    weatherConditions: [],
-    areaNames: [],
-    roadNames: [],
-  });
-
-  useEffect(() => {
-    const fetchOptions = async () => {
-      try {
-        const response = await fetch("/api/dataset-options");
-        const data: Options = await response.json();
-        setOptions(data);
-      } catch (error) {
-        console.error("Error fetching options:", error);
-      }
-    };
-
-    fetchOptions();
-  }, []);
+  const [loading, setLoading] = useState(false); // Track loading state
 
   const handleChange = (name: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async () => {
+    setLoading(true); // Set loading to true when submission starts
     try {
       const response = await fetch("/api/predict-traffic", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      const data: Prediction = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
       setPrediction(data);
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setLoading(false); // Set loading to false once the request completes
     }
   };
 
@@ -94,28 +105,13 @@ const Page: React.FC = () => {
         <CardHeader>
           <CardTitle>Bangalore Traffic Prediction</CardTitle>
           <CardDescription>
-            Fill the Form to get the Prediction of Traffic in Selected Areas of
+            Fill the form to get the prediction of traffic in selected areas of
             Bangalore
           </CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col items-start gap-5 w-full">
           <div className="flex w-full items-start gap-6">
-            <Select onValueChange={(value) => handleChange("Date", value)}>
-              <SelectTrigger className="flex items-center gap-3">
-                <SelectValue placeholder="Select Date" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {options.dates.map((date) => (
-                    <SelectItem key={date} value={date}>
-                      {date}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
             <Select
               onValueChange={(value) =>
                 handleChange("Weather Conditions", value)
@@ -135,6 +131,7 @@ const Page: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+
           <div className="flex w-full items-start gap-6">
             <Select onValueChange={(value) => handleChange("Area Name", value)}>
               <SelectTrigger className="flex items-center gap-3">
@@ -170,33 +167,27 @@ const Page: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          <Select
-            onValueChange={(value) =>
-              handleChange("Roadwork and Construction Activity", value)
-            }
-          >
-            <SelectTrigger className="flex items-center gap-3">
-              <SelectValue placeholder="Roadwork and Construction Activity" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Roadwork and Construction Activity</SelectLabel>
-                <SelectItem value="Yes">Yes</SelectItem>
-                <SelectItem value="No">No</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
         </CardContent>
+
+        {/* Button with loading indicator */}
         <Button
           className="bg-slate-950 text-white"
           variant="outline"
           onClick={handleSubmit}
+          disabled={loading} // Disable button while loading
         >
-          Submit
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+            </>
+          ) : (
+            "Submit"
+          )}
         </Button>
+
         {prediction && (
           <Card className="mt-4 w-full">
-            <CardHeader>
+            <CardHeader className="p-6">
               <CardTitle>Prediction Result</CardTitle>
             </CardHeader>
             <CardContent>
