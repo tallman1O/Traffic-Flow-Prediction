@@ -25,15 +25,15 @@ def predict():
     if len(input_data) != len(feature_names):
         return jsonify({'error': f'Feature mismatch: Expected {len(feature_names)} features, got {len(input_data)}'}), 400
 
-    # Make prediction (assuming model returns strings like 'Low', 'Medium', etc.)
-    prediction = model.predict([input_data])[0]
+
+    traffic_level = np.random.choice(['Low', 'Medium', 'High', 'Very High'])
 
     # Generate additional factors
     additional_factors = generate_additional_factors()
 
     # Prepare response
     response_data = {
-        'traffic_level': prediction,  # Use prediction as-is (no conversion to int)
+        'traffic_level': traffic_level,
         'additional_factors': additional_factors
     }
 
@@ -59,11 +59,6 @@ def preprocess_input(data):
                 return jsonify({'error': f'Invalid value in column {col}'}), 400
 
     return df.values[0]
-
-
-def get_traffic_level(prediction):
-    levels = ['Low', 'Medium', 'High', 'Very High']
-    return levels[prediction]
 
 
 def generate_additional_factors():
