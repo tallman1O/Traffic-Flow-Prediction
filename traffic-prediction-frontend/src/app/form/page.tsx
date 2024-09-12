@@ -71,8 +71,7 @@ const Page: React.FC = () => {
   });
 
   const [prediction, setPrediction] = useState<Prediction | null>(null);
-  const [loading, setLoading] = useState(false); // Track loading state
-
+  const [loading, setLoading] = useState(false); 
   const handleChange = (name: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
