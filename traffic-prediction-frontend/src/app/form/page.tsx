@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react"; // Import Loader
+import { Loader2 } from "lucide-react"; 
 
 type FormData = {
   "Weather Conditions": string;
@@ -77,7 +77,7 @@ const Page: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    setLoading(true); // Set loading to true when submission starts
+    setLoading(true); 
     try {
       const response = await fetch("/api/predict-traffic", {
         method: "POST",
