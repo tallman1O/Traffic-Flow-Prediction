@@ -1,35 +1,32 @@
 "use client";
-import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
+import React from "react";
+import { Vortex } from "@/components/ui/vortex";
 import Link from "next/link";
-export default function HomePage() {
-  const words = [
-    {
-      text: " Predict",
-    },
-    {
-      text: "Traffic",
-    },
-    {
-      text: "Using",
-    },
-    {
-      text: "Machine Learning",
-      className: "text-blue-500 dark:text-blue-500",
-    },
-  ];
+
+export default function VortexDemoSecond() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh bg-slate-950  ">
-      <p className="text-gray-400 dark:text-neutral-200 text-xs sm:text-base  ">
-        Based on Bangalore Traffic Dataset
-      </p>
-      <TypewriterEffectSmooth words={words} />
-      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
-        <Link href="/form">
-          <button className="w-40 h-12 rounded-md bg-white text-black border border-black text-md font-semibold hover:text-blue-500">
-            Start Predicting
-          </button>
-        </Link>
-      </div>
+    <div className="w-full mx-auto rounded-md  h-screen overflow-hidden">
+      <Vortex
+        backgroundColor="black"
+        rangeY={800}
+        particleCount={500}
+        baseHue={120}
+        className="flex items-center flex-col justify-center px-2 md:px-10  py-4 w-full h-full"
+      >
+        <h2 className="text-white text-2xl md:text-6xl font-bold text-center">
+          Traffic Prediction System
+        </h2>
+        <p className="text-white text-sm md:text-2xl max-w-xl mt-6 text-center">
+          Predict Traffic of Banglore City with the power of ML models and algorithms behind the scenes.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
+          <Link href="/form">
+            <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 transition duration-200 rounded-lg text-white shadow-[0px_2px_0px_0px_#FFFFFF40_inset]">
+              Start Predicting
+            </button>
+          </Link>
+        </div>
+      </Vortex>
     </div>
   );
 }

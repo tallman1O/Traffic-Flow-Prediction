@@ -16,18 +16,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react"; 
+import { Loader2 } from "lucide-react";
 
 type FormData = {
-  "Weather Conditions": string;
-  "Area Name": string;
-  "Road/Intersection Name": string;
-  "Roadwork and Construction Activity": string;
+  area_name: string;
+  road_name: string;
+  weather_conditions: string;
 };
 
 type Prediction = {
-  traffic_level: string;
-  additional_factors: { [key: string]: string };
+  individual_predictions: { [key: string]: string };
+  ensemble_prediction: string;
 };
 
 const options = {
@@ -62,22 +61,22 @@ const options = {
   weatherConditions: ["Clear", "Overcast", "Fog", "Rain", "Windy"],
 };
 
-const Page: React.FC = () => {
+const TrafficPredictionForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    "Weather Conditions": "",
-    "Area Name": "",
-    "Road/Intersection Name": "",
-    "Roadwork and Construction Activity": "No",
+    area_name: "",
+    road_name: "",
+    weather_conditions: "",
   });
 
   const [prediction, setPrediction] = useState<Prediction | null>(null);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (name: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const response = await fetch("/api/predict-traffic", {
         method: "POST",
@@ -94,7 +93,7 @@ const Page: React.FC = () => {
     } catch (error) {
       console.error("Error:", error);
     } finally {
-      setLoading(false); // Set loading to false once the request completes
+      setLoading(false);
     }
   };
 
@@ -113,7 +112,7 @@ const Page: React.FC = () => {
           <div className="flex w-full items-start gap-6">
             <Select
               onValueChange={(value) =>
-                handleChange("Weather Conditions", value)
+                handleChange("weather_conditions", value)
               }
             >
               <SelectTrigger className="flex items-center gap-3">
@@ -132,7 +131,7 @@ const Page: React.FC = () => {
           </div>
 
           <div className="flex w-full items-start gap-6">
-            <Select onValueChange={(value) => handleChange("Area Name", value)}>
+            <Select onValueChange={(value) => handleChange("area_name", value)}>
               <SelectTrigger className="flex items-center gap-3">
                 <SelectValue placeholder="Select Area Name" />
               </SelectTrigger>
@@ -147,11 +146,7 @@ const Page: React.FC = () => {
               </SelectContent>
             </Select>
 
-            <Select
-              onValueChange={(value) =>
-                handleChange("Road/Intersection Name", value)
-              }
-            >
+            <Select onValueChange={(value) => handleChange("road_name", value)}>
               <SelectTrigger className="flex items-center gap-3">
                 <SelectValue placeholder="Select Road/Intersection Name" />
               </SelectTrigger>
@@ -168,12 +163,11 @@ const Page: React.FC = () => {
           </div>
         </CardContent>
 
-        {/* Button with loading indicator */}
         <Button
           className="bg-slate-950 text-white"
           variant="outline"
           onClick={handleSubmit}
-          disabled={loading} // Disable button while loading
+          disabled={loading}
         >
           {loading ? (
             <>
@@ -191,16 +185,16 @@ const Page: React.FC = () => {
             </CardHeader>
             <CardContent>
               <p className="text-lg font-semibold">
-                Traffic Level:{" "}
+                Ensemble Prediction:{" "}
                 <span className="text-blue-600">
-                  {prediction.traffic_level}
+                  {prediction.ensemble_prediction}
                 </span>
               </p>
               <h3 className="text-md font-semibold mt-4">
-                Additional Factors:
+                Individual Model Predictions:
               </h3>
               <ul className="list-disc list-inside">
-                {Object.entries(prediction.additional_factors).map(
+                {Object.entries(prediction.individual_predictions).map(
                   ([key, value]) => (
                     <li key={key}>
                       {key}: <span className="font-medium">{value}</span>
@@ -216,4 +210,4 @@ const Page: React.FC = () => {
   );
 };
 
-export default Page;
+export default TrafficPredictionForm;
