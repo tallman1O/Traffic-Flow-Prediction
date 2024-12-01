@@ -59,7 +59,7 @@ traffic-prediction-backend/
 
 The frontend will be available at `http://localhost:3000`.
 
-### Backend (Flask)
+### Backend (FastAPI)
 
 1. Navigate to the backend directory:
    ```
@@ -106,7 +106,7 @@ The backend API will be available at `http://localhost:8000`.
   - TypeScript
   - Tailwind CSS
 - Backend:
-  - Flask
+  - FastAPI
   - Scikit-learn
   - Pandas
   - NumPy
